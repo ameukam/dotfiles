@@ -1,9 +1,46 @@
 {
+    // Telemetry
     "telemetry.enableCrashReporter": false,
     "telemetry.enableTelemetry": false,
+    // Extensions
+    "extensions.autoUpdate": true,
+    "extensions.ignoreRecommendations": true,
+    // WorkBench
     "workbench.iconTheme": "vscode-icons",
     "workbench.colorTheme": "One Dark Pro",
+    "workbench.startupEditor": "newUntitledFile",
+    "workbench.sideBar.location": "left",
+    "workbench.statusBar.visible": true,
+    "workbench.activityBar.visible": true,
+    "workbench.editor.openPositioning": "left",
+    "workbench.colorCustomizations": {
+        "statusBar.background": "#1A1A1A",
+        "statusBar.noFolderBackground": "#0A0A0D",
+        "statusBar.debuggingBackground": "#5f5f5f"
+    },
+    // Editor
+    "editor.fontFamily": "Hasklig Medium",
+    "editor.fontWeight": "normal",
+    "editor.fontSize": 14,
+    "editor.cursorBlinking": "phase",
+    "editor.cursorStyle": "line",
+    "editor.renderWhitespace": "none",
+    "editor.renderIndentGuides": false,
+    "editor.formatOnSave": true,
+    "editor.minimap.enabled": true,
+    "editor.minimap.renderCharacters": true,
+    "editor.fontLigatures": true,
+    "editor.trimAutoWhitespace": true,
+    "editor.insertSpaces": true,
+    // Updates
+    "update.channel": "none",
+    // Window
+    "window.zoomLevel": 0.5,
+    "window.restoreFullscreen": false,
+    "window.menuBarVisibility": "toggle",
+    // VS Icons
     "vsicons.dontShowNewVersionMessage": true,
+    // Golang
     "go.lintTool": "gometalinter",
     "go.autocompleteUnimportedPackages": true,
     "[go]": {
@@ -11,11 +48,24 @@
         "editor.formatOnSave": true
     },
     "go.formatTool": "goreturns",
+    //SpellCheck
     "cSpell.enabled": true,
     "cSpell.language": "en",
     "cSpell.languageSettings": [
-        { "languageId": "python", "allowCompoundWords": true,  "dictionaries": ["python"]},
-        { "languageId": "go",     "allowCompoundWords": true,  "dictionaries": ["go"] },
+        {
+            "languageId": "python",
+            "allowCompoundWords": true,
+            "dictionaries": [
+                "python"
+            ]
+        },
+        {
+            "languageId": "go",
+            "allowCompoundWords": true,
+            "dictionaries": [
+                "go"
+            ]
+        },
     ],
     "cSpell.enabledLanguageIds": [
         "asciidoc",
@@ -42,6 +92,4 @@
         "kubernetes",
         "virtualbox"
     ],
-    "workbench.startupEditor": "newUntitledFile",
-    "window.zoomLevel": 0,    
 }
