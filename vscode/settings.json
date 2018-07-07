@@ -1,0 +1,47 @@
+{
+    "telemetry.enableCrashReporter": false,
+    "telemetry.enableTelemetry": false,
+    "workbench.iconTheme": "vscode-icons",
+    "workbench.colorTheme": "One Dark Pro",
+    "vsicons.dontShowNewVersionMessage": true,
+    "go.lintTool": "gometalinter",
+    "go.autocompleteUnimportedPackages": true,
+    "[go]": {
+        "editor.insertSpaces": false,
+        "editor.formatOnSave": true
+    },
+    "go.formatTool": "goreturns",
+    "cSpell.enabled": true,
+    "cSpell.language": "en",
+    "cSpell.languageSettings": [
+        { "languageId": "python", "allowCompoundWords": true,  "dictionaries": ["python"]},
+        { "languageId": "go",     "allowCompoundWords": true,  "dictionaries": ["go"] },
+    ],
+    "cSpell.enabledLanguageIds": [
+        "asciidoc",
+        "csharp",
+        "go",
+        "json",
+        "markdown",
+        "plaintext",
+        "python",
+        "rust",
+        "text",
+        "yml"
+    ],
+    "cSpell.ignorePaths": [
+        "**/package-lock.json",
+        "**/node_modules/**",
+        "**/vscode-extension/**",
+        "**/.git/**",
+        ".vscode",
+        "typings"
+    ],
+    "cSpell.userWords": [
+        "ansible",
+        "kubernetes",
+        "virtualbox"
+    ],
+    "workbench.startupEditor": "newUntitledFile",
+    "window.zoomLevel": 0,    
+}
