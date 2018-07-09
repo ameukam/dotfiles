@@ -68,6 +68,7 @@ plugins=(
   gpg-agent
   kubectl
   man
+  python
   ssh-agent
   sudo
   systemd
@@ -76,6 +77,7 @@ plugins=(
 )
 
 source $ZSH/oh-my-zsh.sh
+source $HOME/.local/bin/aws_zsh_completer.sh
 
 # User configuration
 
