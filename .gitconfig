@@ -5,6 +5,43 @@
 [credential]
 	helper = cache --timeout 7200
 
+[alias]
+	# Commit all changes on the tree
+	a = !git add -A && git commit -avm
+	all = !git add -A && git commit -avm
+
+	# Amend the currently staged files to the latest commit
+	amend = commit --amend --reuse-message=HEAD
+
+	# Undo work
+	undo = !git reset HEAD~1 --mixed
+
+	# Remove branches that have already been merged with master
+	dm = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d; git remote -v update -p"
+
+	# View the current working tree status using the short format
+	s = status -s
+
+	# View abbreviated SHA, description, and history graph of the latest 20 commits
+	l = log --pretty=oneline -n 20 --graph --abbrev-commit
+
+	# Color graph log view
+	graph = log --graph --color --pretty=format:"%C(yellow)%H%C(green)%d%C(reset)%n%x20%cd%n%x20%cn%x20(%ce)%n%x20%s%n"
+
+	# Advanced logs
+	lg = log --color --decorate --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an (%G?)>%Creset' --abbrev-commit
+
+	# Show verbose output about tags, branches or remotes
+	tags = tag -l
+	branches = branch -a
+	remotes = remote -v
+
+	# Clone a repository including all submodules
+	c = clone --recursive
+
+	# Show all git aliases
+	alias=!git config -l | grep ^alias | cut -c 7- | sort
+
 [apply]
 
 	# Detect whitespace errors when applying a patch
