@@ -88,6 +88,10 @@ source $HOME/.local/bin/aws_zsh_completer.sh
 .  ~/z/z.sh
 
 # User configuration
+[ -f ~/.zsh_alias ] && source ~/.zsh_alias
+[ -f ~/.zsh_docker ] && source ~/.zsh_docker
+[ -f ~/.zsh_func ] && source ~/.zsh_func
+# User configuration
 
 # export MANPATH="/usr/local/man:$MANPATH"
 
@@ -138,6 +142,12 @@ fi
 export GOPATH="$HOME/go"
 export GOBIN="$GOPATH/bin"
 export PATH="$PATH:/usr/local/go/bin:$GOBIN"
+
+# Editors
+export EDITOR="nvim"
+export VISUAL="nvim"
+export PAGER="less"
+
 export BAT_THEME="Monokai Extended Light"
 autoload -U +X bashcompinit && bashcompinit
 complete -o nospace -C /usr/local/bin/terraform terraform
