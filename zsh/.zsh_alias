@@ -1,0 +1,8 @@
+# Editors
+alias vi="nvim"
+alias vim="nvim"
+alias nvi="nvim"
+
+# Navigation
+alias ck='cd $GOPATH/src/k8s.io/kubernetes'
+alias cks='cd $GOPATH/src/sigs.k8s.io'

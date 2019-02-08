@@ -1,0 +1,18 @@
+#Helper functions
+kimages () {
+    kubectl get pods "$@" -o jsonpath='{..image}' |
+        tr ' ' '\n' |
+        sort |
+        uniq -c
+}
+
+# Make a temporary directory and enter it
+tmpd() {
+	local dir
+	if [ $# -eq 0 ]; then
+		dir=$(mktemp -d)
+	else
+		dir=$(mktemp -d -t "${1}.XXXXXXXXXX")
+	fi
+	cd "$dir" || exit
+}
