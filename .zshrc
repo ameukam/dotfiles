@@ -59,12 +59,13 @@ ZSH_THEME="pygmalion"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
+  aws
+  common-aliases
   git
   dnf
   docker-compose
   docker
   fedora
-  git
   gpg-agent
   kubectl
   man
@@ -78,6 +79,8 @@ plugins=(
 
 source $ZSH/oh-my-zsh.sh
 source $HOME/.local/bin/aws_zsh_completer.sh
+
+.  ~/z/z.sh
 
 # User configuration
 
@@ -114,3 +117,6 @@ source $HOME/.local/bin/aws_zsh_completer.sh
 export GOPATH="$HOME/go"
 export GOBIN="$GOPATH/bin"
 export PATH="$PATH:/usr/local/go/bin:$GOBIN"
+export BAT_THEME="Monokai Extended Light"
+autoload -U +X bashcompinit && bashcompinit
+complete -o nospace -C /usr/local/bin/terraform terraform
