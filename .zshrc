@@ -1,8 +1,13 @@
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
+# Hide the percent sign in terminal
+setopt PROMPT_CR
+setopt PROMPT_SP
+export PROMPT_EOL_MARK=""
+
 # Path to your oh-my-zsh installation.
-  export ZSH=/home/ameukam/.oh-my-zsh
+export ZSH=/home/ameukam/.oh-my-zsh
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
@@ -110,6 +115,22 @@ source $HOME/.local/bin/aws_zsh_completer.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# Auto completions
+# kubectx: https://raw.githubusercontent.com/ahmetb/kubectx/master/completion/kubectx.zsh
+if [ -f ~/.kubectx-completion.bash ]; then
+  source ~/.kubectx-completion.bash
+fi
+# kubens: https://raw.githubusercontent.com/ahmetb/kubectx/master/completion/kubens.zsh
+if [ -f ~/.kubens-completion.bash ]; then
+  source ~/.kubens-completion.bash
+fi
+# git-completion: https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash
+if [ -f ~/.git-completion.bash ]; then
+  source ~/.git-completion.bash
+fi
 
 # Kubectl aliases
 [ -f ~/.kubectl_aliases ] && source ~/.kubectl_aliases
