@@ -80,6 +80,8 @@ plugins=(
   systemd
   terraform
   vagrant
+  zsh-autosuggestions
+  zsh-syntax-highlighting
 )
 
 source $ZSH/oh-my-zsh.sh
