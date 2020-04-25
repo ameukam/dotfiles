@@ -1,95 +1,29 @@
 {
-    // Telemetry
-    "telemetry.enableCrashReporter": false,
-    "telemetry.enableTelemetry": false,
-    // Extensions
-    "extensions.autoUpdate": true,
-    "extensions.ignoreRecommendations": true,
-    // WorkBench
-    "workbench.iconTheme": "vscode-icons",
-    "workbench.colorTheme": "One Dark Pro",
-    "workbench.startupEditor": "newUntitledFile",
-    "workbench.sideBar.location": "left",
-    "workbench.statusBar.visible": true,
-    "workbench.activityBar.visible": true,
-    "workbench.editor.openPositioning": "left",
-    "workbench.colorCustomizations": {
-        "statusBar.background": "#1A1A1A",
-        "statusBar.noFolderBackground": "#0A0A0D",
-        "statusBar.debuggingBackground": "#5f5f5f"
-    },
-    // Editor
-    "editor.fontFamily": "Hasklig Medium",
-    "editor.fontWeight": "normal",
-    "editor.fontSize": 14,
-    "editor.cursorBlinking": "phase",
-    "editor.cursorStyle": "line",
-    "editor.renderWhitespace": "none",
-    "editor.renderIndentGuides": false,
     "editor.formatOnSave": true,
-    "editor.minimap.enabled": true,
-    "editor.minimap.renderCharacters": true,
-    "editor.fontLigatures": true,
-    "editor.trimAutoWhitespace": true,
-    "editor.insertSpaces": true,
-    // Updates
-    "update.channel": "none",
-    // Window
-    "window.zoomLevel": 0.5,
-    "window.restoreFullscreen": false,
-    "window.menuBarVisibility": "toggle",
-    // VS Icons
-    "vsicons.dontShowNewVersionMessage": true,
-    // Golang
-    "go.lintTool": "gometalinter",
-    "go.autocompleteUnimportedPackages": true,
-    "[go]": {
-        "editor.insertSpaces": false,
-        "editor.formatOnSave": true
+    "editor.quickSuggestions": {
+        "other": false,
+        "comments": false,
+        "strings": false,
     },
-    "go.formatTool": "goreturns",
-    //SpellCheck
-    "cSpell.enabled": true,
-    "cSpell.language": "en",
-    "cSpell.languageSettings": [
-        {
-            "languageId": "python",
-            "allowCompoundWords": true,
-            "dictionaries": [
-                "python"
-            ]
-        },
-        {
-            "languageId": "go",
-            "allowCompoundWords": true,
-            "dictionaries": [
-                "go"
-            ]
-        },
+    "editor.minimap.enabled": false,
+    "files.autoSave": "onFocusChange",
+    "files.eol": "\n",
+    "files.trimTrailingWhitespace": true,
+    "files.trimFinalNewlines": true,
+    "go.formatTool": "goimports",
+    "go.lintTool": "golangci-lint",
+    "go.lintFlags": [
+        "--fast"
     ],
-    "cSpell.enabledLanguageIds": [
-        "asciidoc",
-        "csharp",
-        "go",
-        "json",
-        "markdown",
-        "plaintext",
-        "python",
-        "rust",
-        "text",
-        "yml"
-    ],
-    "cSpell.ignorePaths": [
-        "**/package-lock.json",
-        "**/node_modules/**",
-        "**/vscode-extension/**",
-        "**/.git/**",
-        ".vscode",
-        "typings"
-    ],
-    "cSpell.userWords": [
-        "ansible",
-        "kubernetes",
-        "virtualbox"
-    ],
+    "telemetry.enableTelemetry": false,
+    "terraform.telemetry.enabled": false,
+    "telemetry.enableCrashReporter": false,
+    "window.openFoldersInNewWindow": "on",
+    "window.title": "${dirty}${rootName}",
+    "window.newWindowDimensions": "maximized",
+    "workbench.colorTheme": "One Dark Pro",
+    "workbench.iconTheme": "vscode-icons",
+    "terminal.external.linuxExec": "tilix",
+    "go.useLanguageServer": true,
+    "window.zoomLevel": 0
 }
