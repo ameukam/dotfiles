@@ -2,7 +2,6 @@
 
 Dotfiles i have used and tweaked over the time.
 
-
 # Setup
 
 <table>
@@ -14,8 +13,8 @@ Dotfiles i have used and tweaked over the time.
     <th>Multiplexer</th>
   </tr>
   <tr>
-    <td>Terminator</td>
-    <td>zsh</td>
+    <td>Ghostty</td>
+    <td>fish</td>
     <td>neovim</td>
     <td>git</td>
     <td>tmux</td>
