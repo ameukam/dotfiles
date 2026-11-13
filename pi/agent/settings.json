@@ -1,0 +1,59 @@
+{
+  "lastChangelogVersion": "1.5.2",
+  "defaultProvider": "github-copilot",
+  "defaultModel": "claude-opus-5.5",
+  "enabledModels": [
+    "github-copilot/claude-opus-5.5:high",
+    "github-copilot/gpt-6.1-sol:high",
+    "github-copilot/claude-haiku-5.5:low",
+    "github-copilot/claude-fable-5.2:xhigh",
+    "google-vertex/gemini-4-hydrogen:high",
+    "google-vertex/gemini-4-carbon:high"
+  ],
+  "packages": [
+    "npm:pi-subagents@0.88.0",
+    "npm:@sting8k/pi-vcc@0.11.2",
+    "npm:pi-context-view@0.8.4",
+    "npm:@spences10/pi-themes@0.0.11",
+    "npm:pi-web-access"
+  ],
+  "defaultTools": [
+    "+codemode"
+  ],
+  "subagents": {
+    "agentOverridesByProvider": {
+      "github-copilot": {
+        "scout": {
+          "model": "github-copilot/gpt-6.1-sol",
+          "thinking": "medium"
+        }
+      }
+    },
+    "defaultSubagentOnlyExtensions": [
+      "/home/arnaudm/.pi/agent/extensions/permission-gate.ts"
+    ],
+    "agentOverrides": {
+      "reviewer": {
+        "model": "github-copilot/gpt-6.1-sol",
+        "thinking": "high"
+      },
+      "oracle": {
+        "model": "github-copilot/claude-fable-5.2",
+        "thinking": "xhigh"
+      }
+    },
+    "watchdog": {
+      "enabled": true,
+      "main": {
+        "model": "github-copilot/gpt-6.1-sol",
+        "thinking": "high"
+      }
+    }
+  },
+  "extensionChangelogVersions": {
+    "{\"source\":\"npm:pi-subagents@0.88.0\",\"scope\":\"user\"}": "0.88.0",
+    "{\"source\":\"npm:@sting8k/pi-vcc@0.11.2\",\"scope\":\"user\"}": "0.11.2",
+    "{\"source\":\"npm:pi-context-view@0.8.4\",\"scope\":\"user\"}": "0.8.4",
+    "{\"source\":\"npm:pi-web-access\",\"scope\":\"user\"}": "0.47.0"
+  }
+}

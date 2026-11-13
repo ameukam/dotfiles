@@ -21,3 +21,15 @@ Dotfiles i have used and tweaked over the time.
     <td>tmux</td>
   </tr>
 </table>
+
+# Pi coding agent
+
+`pi/agent/` holds the tracked part of `~/.pi/agent` (settings, models, MCP servers,
+extensions, prompt templates, subagent definitions). Link it into place with:
+
+```bash
+./pi/install.sh
+```
+
+Secrets and runtime state (`auth.json`, `sessions/`, `npm/`, caches) stay in
+`~/.pi/agent` and are never committed.
