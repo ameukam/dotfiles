@@ -2,3 +2,6 @@
 .DS_Store
 *.swp
 *~
+
+# In-repo git worktrees (pi / worktrunk)
+.worktrees/

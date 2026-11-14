@@ -1,3 +1,4 @@
 {
-  "globalConcurrencyLimit": 4
+  "globalConcurrencyLimit": 4,
+  "worktreeProvider": "worktrunk"
 }
