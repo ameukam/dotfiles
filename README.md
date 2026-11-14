@@ -16,7 +16,7 @@ Dotfiles i have used and tweaked over the time.
     <td>Ghostty</td>
     <td>fish</td>
     <td>neovim</td>
-    <td>git</td>
+    <td>git + jj (Jujutsu)</td>
     <td>zellij (tmux kept)</td>
   </tr>
 </table>
@@ -40,6 +40,25 @@ per-directory link instead of a shared `~/bin/terraform` symlink.
 
 VS Code settings and the extension list (`code --list-extensions`) are in `vscode/`.
 Not tracked: `~/.ssh/config` (it names private hosts; only an old generic copy is here).
+
+# Git / Jujutsu
+
+`git/gitconfig` and `jj/config.toml` share one fork workflow (`origin` = fork, `upstream` =
+project), SSH signing and DCO sign-off. Clone forks with `gh repo clone ameukam/<repo>` (adds
+`upstream`), then optionally `jj git init --colocate`.
+
+| Task | git | jj |
+| --- | --- | --- |
+| Start work on fresh upstream | `git new <branch>` | `jj fresh` |
+| Rebase onto latest upstream | `git up` | `jj sync` |
+| Fix up an earlier commit | `git fix <sha>` | `jj squash --into <rev>` |
+| Push / open PR | `git push` then `gh pr create` | `jj pr @-` then `gh pr create` |
+| Force-push after rebase | `git pushf` | `jj git push` |
+| Clean up merged branches | `git gone` / `git dm` | automatic |
+| Format the whole stack | – | `jj fix` (gofmt) |
+
+Large k8s repos (`~/go/src/{k8s.io,sigs.k8s.io}`) get fsmonitor + `feature.manyFiles` via
+`git/large-repos`.
 
 # Pi coding agent
 

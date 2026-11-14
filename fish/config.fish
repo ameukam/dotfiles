@@ -12,6 +12,7 @@ if status is-interactive
     atuin init fish | source
     fzf --fish | source
     zoxide init fish | source
+    type -q jj; and COMPLETE=fish jj | source
 end
 
 # SSH logins (e.g. over Tailscale from the Mac or Pixel) get no agent socket; reuse the

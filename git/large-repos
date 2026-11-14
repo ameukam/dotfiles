@@ -1,0 +1,5 @@
+# Included from gitconfig for big monorepos (kubernetes/kubernetes, test-infra, website...)
+[core]
+	fsmonitor = true
+[feature]
+	manyFiles = true

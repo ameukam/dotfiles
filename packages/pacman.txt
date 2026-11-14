@@ -163,6 +163,7 @@ iputils
 jfsutils
 jo
 jq
+jujutsu
 kdenlive
 kitty
 krew

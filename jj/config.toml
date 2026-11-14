@@ -1,0 +1,115 @@
+#:schema https://docs.jj-vcs.dev/latest/config-schema.json
+# Jujutsu (jj) user config — tracked in ~/dotfiles/jj/config.toml
+# Fork workflow: `origin` = your fork (push), `upstream` = the project (fetch).
+# Clone with `gh repo clone ameukam/<repo>` (adds upstream), then `jj git init --colocate`.
+
+[user]
+name = "Arnaud Meukam"
+email = "ameukam@gmail.com"
+
+[ui]
+editor = "nvim"
+# Git-style diffs, rendered by delta (reuses the [delta] section of ~/.gitconfig)
+diff-formatter = ":git"
+# Git's diff3-style markers: works with nvim conflict plugins and muscle memory
+conflict-marker-style = "git"
+
+[snapshot]
+max-new-file-size = "5MiB"
+
+# ---------------------------------------------------------------- signing
+# Same SSH key as git. Sign lazily at push time instead of on every snapshot.
+[signing]
+behavior = "drop"
+backend = "ssh"
+key = "~/.ssh/id_ed25519.pub"
+backends.ssh.allowed-signers = "~/.config/git/allowed_signers"
+
+[git]
+sign-on-push = true
+# Fetch from both, push only to your fork. Override per repo with `jj config set --repo`.
+fetch = ["upstream", "origin"]
+push = "origin"
+# Refuse to push work in progress
+private-commits = "description(glob:'wip:*') | description(glob:'private:*')"
+
+# Track everything on your fork, only the default branch upstream
+[remotes.origin]
+auto-track-bookmarks = "*"
+[remotes.upstream]
+auto-track-bookmarks = "main | master"
+
+# ---------------------------------------------------------------- templates
+[templates]
+# DCO: add Signed-off-by to every described commit (CNCF / k8s requirement)
+commit_trailers = "format_signed_off_by_trailer(self)"
+# Show the diff below the message while editing (like `commit.verbose`)
+draft_commit_description = '''
+concat(
+  builtin_draft_commit_description,
+  "\nJJ: ignore-rest\n",
+  diff.git(),
+)
+'''
+
+[template-aliases]
+"format_timestamp(timestamp)" = "timestamp.ago()"
+
+# ---------------------------------------------------------------- revsets
+[revsets]
+# `jj bookmark advance` / `jj tug` moves the bookmark to the closest pushable commit
+bookmark-advance-to = "closest_pushable(@)"
+
+[revset-aliases]
+# Don't accidentally rewrite other people's commits (e.g. when reviewing their PRs)
+"immutable_heads()" = "builtin_immutable_heads() | (trunk().. & ~mine())"
+"closest_pushable(to)" = 'heads(::to & mutable() & ~description(exact:"") & (~empty() | merges()))'
+# The stack of mutable commits around @ (plus a bit of context)
+"stack()" = "ancestors(reachable(@, mutable()), 2)"
+# All my unmerged work across all branches
+"open()" = "trunk().. & mine()"
+
+# ---------------------------------------------------------------- aliases
+[aliases]
+# jj ls           -> current stack       jj lo   -> all my unmerged work
+ls = ["log", "-r", "stack()"]
+lo = ["log", "-r", "open() | trunk()"]
+# Move the nearest bookmark up to the latest pushable commit
+tug = ["bookmark", "advance"]
+# Fetch (upstream + origin) then rebase all my stacks onto the new trunk
+sync = ["util", "exec", "--", "sh", "-c", "jj git fetch && jj rebase -s 'roots(trunk()..) & mutable() & mine()' -o 'trunk()'"]
+restack = ["rebase", "-s", "roots(trunk()..) & mutable() & mine()", "-o", "trunk()"]
+# Push @- (or given rev) to the fork, creating a push-<change-id> bookmark: then `gh pr create`
+pr = ["git", "push", "-c"]
+# Start a new change on top of the latest trunk
+fresh = ["new", "trunk()"]
+# Verify signatures of the current stack
+sigs = ["log", "-r", "stack()", "-T", "builtin_log_oneline ++ format_detailed_cryptographic_signature(signature)"]
+
+# ---------------------------------------------------------------- jj fix
+# `jj fix` reformats every commit in the stack without conflicts
+[fix.tools.gofmt]
+command = ["gofmt"]
+patterns = ["glob:'**/*.go'"]
+
+[fix.tools.terraform]
+enabled = false # enable per repo: jj config set --repo fix.tools.terraform.enabled true
+command = ["terraform", "fmt", "-"]
+patterns = ["glob:'**/*.tf'", "glob:'**/*.tfvars'"]
+
+[fix.tools.shfmt]
+enabled = false
+command = ["shfmt", "-filename", "$path"]
+patterns = ["glob:'**/*.sh'"]
+
+# ---------------------------------------------------------------- per-command
+# delta for diffs; plain less elsewhere (delta would re-render graph output)
+[[--scope]]
+--when.commands = ["diff", "show", "interdiff", "evolog", "log"]
+[--scope.ui]
+pager = "delta"
+
+[[--scope]]
+--when.commands = ["status"]
+[--scope.ui]
+paginate = "never"

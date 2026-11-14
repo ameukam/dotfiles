@@ -5,49 +5,66 @@
 
 [credential]
 	helper = cache --timeout 7200
+[credential "https://github.com"]
+	helper =
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper =
+	helper = !/usr/bin/gh auth git-credential
+
+# `git clone gh:kubernetes/kops`
+[url "git@github.com:"]
+	insteadOf = gh:
 
 [alias]
-	# Commit all changes on the tree
-	a = !git add -A && git commit -avm
-	all = !git add -A && git commit -avm
-
-	# Amend the currently staged files to the latest commit
-	amend = commit --amend --reuse-message=HEAD -s
-
-	# Commit with sign-off
+	# --- committing (DCO sign-off everywhere: CNCF/k8s require it) ---
 	cm = commit -s -m
-	commit = commit -s
+	# Stage everything and commit
+	a = !git add -A && git commit -s -m
+	all = !git add -A && git commit -s -m
+	# Amend staged changes into HEAD, keep the message
+	amend = commit --amend --no-edit -s
+	# Fixup a commit (default HEAD) and autosquash it in place, without moving the base
+	fix = "!f() { git commit -s --fixup=\"${1:-HEAD}\" && git -c sequence.editor=: rebase -i --autosquash \"$(git merge-base HEAD \"$(git trunk)\")\"; }; f"
+	# Undo the last commit, keep the changes
+	undo = reset HEAD~1 --mixed
 
-	# Undo work
-	undo = !git reset HEAD~1 --mixed
+	# --- fork workflow (origin = your fork, upstream = project) ---
+	# Default branch name / remote ref of the project (prefers upstream over origin)
+	default = "!f() { for r in upstream origin; do b=$(git symbolic-ref --short -q refs/remotes/$r/HEAD) && { echo \"${b#*/}\"; return; }; done; echo main; }; f"
+	trunk = "!f() { for r in upstream origin; do b=$(git symbolic-ref --short -q refs/remotes/$r/HEAD) && { echo \"$b\"; return; }; done; echo main; }; f"
+	# New topic branch from a freshly fetched upstream default branch
+	new = "!f() { git fetch -q \"$(git trunk | cut -d/ -f1)\" && git switch --no-track -c \"$1\" \"$(git trunk)\"; }; f"
+	# Rebase current branch onto the latest upstream default branch
+	up = "!git fetch -q --all --prune && git rebase \"$(git trunk)\""
+	checkout-main = !git switch \"$(git default)\"
+	# Safe force push after a rebase
+	pushf = push --force-with-lease --force-if-includes
+	# Check out a PR by number/URL/branch
+	pr = !gh pr checkout
+	# Delete local branches whose remote branch is gone (PR merged & branch deleted)
+	gone = "!git fetch -q --all --prune && git for-each-ref --format='%(refname:short) %(upstream:track)' refs/heads | awk '$2 == \"[gone]\" {print $1}' | xargs -r git branch -D"
+	# Delete local branches already merged into the default branch
+	dm = "!git branch --merged \"$(git trunk)\" | grep -vE '^[*+]|^\\s*(main|master)$' | xargs -r git branch -d"
 
-	# Remove branches that have already been merged with master
-	dm = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d; git remote -v update -p"
-
-	# View the current working tree status using the short format
-	s = status -s
-
-	# View abbreviated SHA, description, and history graph of the latest 20 commits
+	# --- inspection ---
+	s = status -sb
 	l = log --pretty=oneline -n 20 --graph --abbrev-commit
-
-	# Color graph log view
 	graph = log --graph --color --pretty=format:"%C(yellow)%H%C(green)%d%C(reset)%n%x20%cd%n%x20%cn%x20(%ce)%n%x20%s%n"
-
-	# Advanced logs
 	lg = log --color --decorate --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an (%G?)>%Creset' --abbrev-commit
-
-	# Show verbose output about tags, branches or remotes
+	# Commits on this branch that are not upstream yet
+	mine = "!git log --oneline --graph \"$(git trunk)\"..HEAD"
+	recent = for-each-ref --count=20 --sort=-committerdate refs/heads --format='%(color:green)%(committerdate:relative)%(color:reset)\t%(color:yellow)%(refname:short)%(color:reset)\t%(subject)'
 	tags = tag -l
 	branches = branch -a
 	remotes = remote -v
 
-	# Clone a repository including all submodules
+	# Clone including submodules / blobless partial clone (fast for huge repos like k/k)
 	c = clone --recursive
+	cf = clone --filter=blob:none
 
 	# Show all git aliases
-	alias=!git config -l | grep ^alias | cut -c 7- | sort
-	default = !git symbolic-ref refs/remotes/origin/HEAD | sed 's:^refs/remotes/origin/::'
-	checkout-main = !git checkout $(git default)
+	alias = !git config --get-regexp ^alias\\. | cut -c 7- | sort
 
 [apply]
 	# Detect whitespace errors when applying a patch
@@ -55,46 +72,12 @@
 
 [core]
 	# Global ignores live in ~/.config/git/ignore (git's default location)
-
-	# Treat spaces before tabs and all kinds of trailing whitespace as an error
-	# [default] trailing-space: looks for spaces at the end of a line
-	# [default] space-before-tab: looks for spaces before tabs at the beginning of a line
 	whitespace = space-before-tab,-indent-with-non-tab,trailing-space
-
-	# Make `git rebase` safer on OS X
-	# More info: <http://www.git-tower.com/blog/make-git-rebase-safe-on-osx/>
 	trustctime = false
 	editor = nvim
 	pager = delta
 	symlinks = true
-
-[color]
-	# Use colors in Git commands that are capable of colored output when
-	# outputting to the terminal. (This is the default setting in Git ≥ 1.8.4.)
-	ui = true
-
-[commit]
-	gpgsign = true
-	template = ~/.gitmessage-dco
-
-[diff]
-	colorMoved = default
-
-[delta]
-  navigate = true
-  features = line-numbers decorations
-  side-by-side = true
-  light = false
-  true-color = always
-	whitespace-error-style = 22 reverse
-
-[delta "decorations"]
-	commit-decoration-style = bold yellow box ul
-	file-style = bold yellow ul
-	file-decoration-style = none
-
-[http]
-	sslVerify = true
+	untrackedCache = true
 
 [init]
 	defaultBranch = main
@@ -103,23 +86,92 @@
 	# Suggest corrections for mistyped commands and ask before running them
 	autocorrect = prompt
 
-[interactive]
-	diffFilter = delta --color-only --width 100
+[column]
+	ui = auto
+
+[branch]
+	sort = -committerdate
+
+[tag]
+	sort = version:refname
+	gpgSign = true
+
+[commit]
+	gpgsign = true
+	template = ~/.gitmessage-dco
+	# Show the diff in the editor while writing the message
+	verbose = true
+
+[gpg]
+	format = ssh
+[gpg "ssh"]
+	allowedSignersFile = ~/.config/git/allowed_signers
+
+[fetch]
+	prune = true
+	pruneTags = true
+	all = true
+	parallel = 0
+	writeCommitGraph = true
+
+[pull]
+	rebase = true
+
+[push]
+	default = simple
+	autoSetupRemote = true
+	followTags = true
+	useForceIfIncludes = true
+
+[remote]
+	# Forks: pushes without an explicit remote go to your fork, never upstream
+	pushDefault = origin
+
+[rebase]
+	autoSquash = true
+	autoStash = true
+	updateRefs = true
+	missingCommitsCheck = warn
 
 [merge]
-	conflictstyle = diff3
+	conflictstyle = zdiff3
 	# Include summaries of merged commits in newly created merge commit messages
 	log = true
 
-[push]
-	# change to maching for machines with older versions of git 1.x.x
-	default = simple
+[rerere]
+	enabled = true
+	autoupdate = true
 
-[color "diff-highlight"]
-	oldNormal = red bold
-	oldHighlight = red bold 52
-	newNormal = green bold
-	newHighlight = green bold 22
+[diff]
+	algorithm = histogram
+	colorMoved = plain
+	colorMovedWS = allow-indentation-change
+	mnemonicPrefix = true
+	renames = copies
+	submodule = log
+
+[status]
+	submoduleSummary = true
+
+[submodule]
+	recurse = true
+
+[interactive]
+	diffFilter = delta --color-only
+
+[delta]
+	navigate = true
+	features = line-numbers decorations
+	side-by-side = true
+	light = false
+	true-color = always
+	hyperlinks = true
+	whitespace-error-style = 22 reverse
+
+[delta "decorations"]
+	commit-decoration-style = bold yellow box ul
+	file-style = bold yellow ul
+	file-decoration-style = none
 
 [color "diff"]
 	meta = yellow
@@ -128,15 +180,9 @@
 	old = red bold
 	new = green bold
 	whitespace = red reverse
-[rerere]
-	enabled = true
-[gpg]
-	format = ssh
-[gpg "ssh"]
-	allowedSignersFile = ~/.config/git/allowed_signers
-[credential "https://github.com"]
-	helper = 
-	helper = !/usr/bin/gh auth git-credential
-[credential "https://gist.github.com"]
-	helper = 
-	helper = !/usr/bin/gh auth git-credential
+
+# Large Kubernetes repos: filesystem monitor + index tuning
+[includeIf "gitdir:~/go/src/k8s.io/"]
+	path = ~/.config/git/large-repos
+[includeIf "gitdir:~/go/src/sigs.k8s.io/"]
+	path = ~/.config/git/large-repos
