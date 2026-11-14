@@ -1,0 +1,80 @@
+#!/usr/bin/env fish
+# git sync [filter] — fast-forward default branch of every fork (repo with an "upstream" remote) and push to origin
+# Usage: git sync [filter]   e.g. `git sync`, `git sync kops`, `git sync k8s.io/`
+# Roots can be overridden: set -U GSYNC_ROOTS ~/go/src ~/projects
+set -l roots $GSYNC_ROOTS
+test -z "$roots"; and set roots ~/go/src ~/projects
+
+set -l ok 0
+set -l failed
+
+for gitdir in (fd -H -t d '^\.git$' -d 5 $roots 2>/dev/null)
+    set -l repo (string replace -r '/\.git/?$' '' -- $gitdir)
+    # only repos with an upstream remote (i.e. forks you work on)
+    git -C $repo remote get-url upstream >/dev/null 2>&1; or continue
+    if set -q argv[1]; and not string match -q -- "*$argv[1]*" $repo
+        continue
+    end
+
+    set -l name (string replace -- ~/ '~/' $repo)
+    set_color --bold blue; echo "==> $name"; set_color normal
+
+    if not git -C $repo fetch -q --prune upstream
+        set -a failed "$name (fetch)"; continue
+    end
+
+    # default branch (main or master): refresh upstream/HEAD from the remote, since the
+    # cached value goes stale when a project renames master -> main
+    git -C $repo remote set-head upstream --auto >/dev/null 2>&1
+    set -l b (git -C $repo symbolic-ref --short -q refs/remotes/upstream/HEAD | string replace 'upstream/' '')
+    if test -n "$b"; and not git -C $repo show-ref -q --verify refs/remotes/upstream/$b
+        set b
+    end
+    if test -z "$b"
+        for c in main master
+            if git -C $repo show-ref -q --verify refs/remotes/upstream/$c
+                set b $c; break
+            end
+        end
+    end
+    if test -z "$b"
+        set -a failed "$name (no default branch)"; continue
+    end
+
+    set -l cur (git -C $repo branch --show-current)
+    set -l where $cur
+    test -z "$where"; and set where 'detached HEAD'
+    if test "$cur" = "$b"
+        # checked out: ff-only merge (refuses if diverged / conflicts with local changes)
+        git -C $repo merge -q --ff-only upstream/$b
+    else if git -C $repo show-ref -q --verify refs/heads/$b
+        # not checked out: fast-forward the ref without touching the worktree
+        git -C $repo fetch -q . upstream/$b:$b
+    else
+        git -C $repo branch -q --track $b upstream/$b
+    end
+    or begin
+        set -a failed "$name ($b not fast-forwardable)"; continue
+    end
+
+    set -l err (git -C $repo push -q origin $b 2>&1)
+    if test $status -eq 0
+        if test "$cur" = "$b"
+            echo "   $b synced"
+        else
+            echo "   $b synced (on $where)"
+        end
+        set ok (math $ok + 1)
+    else if string match -q -r 'non-fast-forward|fetch first|rejected' -- $err
+        set -a failed "$name (fork's $b has diverged from upstream; reset it with: git -C $repo push --force-with-lease origin $b)"
+    else
+        set -a failed "$name (push $b: "(string join ' ' -- $err | string shorten -m 80)")"
+    end
+end
+
+echo
+set_color green; echo "$ok repo(s) synced"; set_color normal
+if set -q failed[1]
+    set_color red; echo "Failed:"; printf '  %s\n' $failed; set_color normal
+    exit 1
+end

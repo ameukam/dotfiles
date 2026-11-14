@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# Terraform dispatcher: picks the version for the current directory with tfswitch,
+# but writes a private per-directory link instead of retargeting one global
+# ~/bin/terraform, so concurrent shells and agents cannot change each other's version.
+set -euo pipefail
+
+versions="$HOME/.terraform.versions"
+latest=$(ls "$versions" 2>/dev/null | sed -n 's/^terraform_\([0-9][0-9.]*\)$/\1/p' | sort -V | tail -1)
+[ -n "$latest" ] || { echo "terraform: no versions in $versions; run tfswitch" >&2; exit 127; }
+
+dir=$PWD
+pin_dir="${XDG_CACHE_HOME:-$HOME/.cache}/terraform-pins/$(printf '%s' "$dir" | sha1sum | cut -c1-16)"
+link="$pin_dir/terraform"
+
+if compgen -G "$dir/*.tf" >/dev/null || [ -f "$dir/.terraform-version" ] || [ -f "$dir/.tfswitchrc" ]; then
+  # Re-resolve when the link is missing or a version source changed since the last resolution.
+  if [ ! -x "$link" ] || [ ! -f "$pin_dir/stamp" ] || \
+     [ -n "$(find "$dir" -maxdepth 1 \( -name '*.tf' -o -name .terraform-version -o -name .tfswitchrc \) -newer "$pin_dir/stamp" -print -quit)" ]; then
+    mkdir -p "$pin_dir"
+    tfswitch -b "$link" -d "$latest" -g ERROR </dev/null >&2
+    touch "$pin_dir/stamp"
+  fi
+  exec "$link" "$@"
+fi
+exec "$versions/terraform_$latest" "$@"

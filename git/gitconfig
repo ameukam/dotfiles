@@ -1,6 +1,7 @@
 [user]
 	name = Arnaud Meukam
-	email = ***k***@*********
+	email = ameukam@gmail.com
+	signingkey = /home/arnaudm/.ssh/id_ed25519.pub
 
 [credential]
 	helper = cache --timeout 7200
@@ -11,7 +12,11 @@
 	all = !git add -A && git commit -avm
 
 	# Amend the currently staged files to the latest commit
-	amend = commit --amend --reuse-message=HEAD
+	amend = commit --amend --reuse-message=HEAD -s
+
+	# Commit with sign-off
+	cm = commit -s -m
+	commit = commit -s
 
 	# Undo work
 	undo = !git reset HEAD~1 --mixed
@@ -41,16 +46,15 @@
 
 	# Show all git aliases
 	alias=!git config -l | grep ^alias | cut -c 7- | sort
+	default = !git symbolic-ref refs/remotes/origin/HEAD | sed 's:^refs/remotes/origin/::'
+	checkout-main = !git checkout $(git default)
 
 [apply]
-
 	# Detect whitespace errors when applying a patch
 	whitespace = fix
 
 [core]
-
-	# Use custom `.gitignore` and `.gitattributes`
-	excludesfile = ~/.gitignore
+	# Global ignores live in ~/.config/git/ignore (git's default location)
 
 	# Treat spaces before tabs and all kinds of trailing whitespace as an error
 	# [default] trailing-space: looks for spaces at the end of a line
@@ -61,29 +65,78 @@
 	# More info: <http://www.git-tower.com/blog/make-git-rebase-safe-on-osx/>
 	trustctime = false
 	editor = nvim
-	mergetool = vimdiff
+	pager = delta
+	symlinks = true
 
 [color]
-
 	# Use colors in Git commands that are capable of colored output when
 	# outputting to the terminal. (This is the default setting in Git ≥ 1.8.4.)
-	ui = auto
+	ui = true
+
+[commit]
+	gpgsign = true
+	template = ~/.gitmessage-dco
 
 [diff]
+	colorMoved = default
 
-	# Detect copies as well as renames
-	renames = copies
+[delta]
+  navigate = true
+  features = line-numbers decorations
+  side-by-side = true
+  light = false
+  true-color = always
+	whitespace-error-style = 22 reverse
+
+[delta "decorations"]
+	commit-decoration-style = bold yellow box ul
+	file-style = bold yellow ul
+	file-decoration-style = none
+
+[http]
+	sslVerify = true
+
+[init]
+	defaultBranch = main
 
 [help]
+	# Suggest corrections for mistyped commands and ask before running them
+	autocorrect = prompt
 
-	# Automatically correct and execute mistyped commands
-	autocorrect = 1
+[interactive]
+	diffFilter = delta --color-only --width 100
 
 [merge]
-	tool = vimdiff
+	conflictstyle = diff3
 	# Include summaries of merged commits in newly created merge commit messages
 	log = true
 
 [push]
 	# change to maching for machines with older versions of git 1.x.x
 	default = simple
+
+[color "diff-highlight"]
+	oldNormal = red bold
+	oldHighlight = red bold 52
+	newNormal = green bold
+	newHighlight = green bold 22
+
+[color "diff"]
+	meta = yellow
+	frag = magenta bold
+	commit = yellow bold
+	old = red bold
+	new = green bold
+	whitespace = red reverse
+[rerere]
+	enabled = true
+[gpg]
+	format = ssh
+[gpg "ssh"]
+	allowedSignersFile = ~/.config/git/allowed_signers
+[credential "https://github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential

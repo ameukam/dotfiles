@@ -1,0 +1,4 @@
+# Global git ignores
+.DS_Store
+*.swp
+*~

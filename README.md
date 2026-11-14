@@ -17,9 +17,29 @@ Dotfiles i have used and tweaked over the time.
     <td>fish</td>
     <td>neovim</td>
     <td>git</td>
-    <td>tmux</td>
+    <td>zellij (tmux kept)</td>
   </tr>
 </table>
+
+# Install
+
+```bash
+./install.sh
+```
+
+Symlinks fish, Neovim (LazyVim), starship, atuin, zellij, tmux (`~/.tmux.conf.local` for
+[oh-my-tmux](https://github.com/gpakosz/.tmux)), git and `~/bin` scripts into place, then
+runs `pi/install.sh`. Existing files are moved to
+`~/.local/share/dotfiles-backup/<timestamp>/`, never overwritten. Re-running it is a no-op.
+
+Packages: `packages/pacman.txt` (repo) and `packages/aur.txt` (AUR), from `pacman -Qqen` /
+`pacman -Qqem`. Reinstall with `sudo pacman -S --needed - < packages/pacman.txt`.
+
+`bin/terraform` dispatches each directory to its `required_version` via `tfswitch -b`, using a
+per-directory link instead of a shared `~/bin/terraform` symlink.
+
+Not tracked here: `.ssh/config` beyond the old copy (it names private hosts) and VS Code
+settings (`vscode/`, stale).
 
 # Pi coding agent
 
