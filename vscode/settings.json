@@ -1,29 +1,234 @@
 {
-    "editor.formatOnSave": true,
-    "editor.quickSuggestions": {
-        "other": false,
-        "comments": false,
-        "strings": false,
+  // Editor
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
+  "editor.formatOnSave": false,
+  "editor.renderLineHighlight": "gutter",
+  "editor.hideCursorInOverviewRuler": true,
+  "editor.scrollBeyondLastLine": false,
+  "editor.tabSize": 4,
+  "editor.lineHeight": 26,
+  // "editor.lineNumbers": "on",
+  "editor.occurrencesHighlight": "off",
+  "editor.overviewRulerBorder": false,
+  "editor.folding": false,
+  "editor.snippetSuggestions": "top",
+  "editor.lightbulb.enabled": "off",
+  "editor.minimap.enabled": false,
+  "editor.cursorBlinking": "solid",
+  "editor.cursorStyle": "line",
+  "editor.fontFamily": "Fira Code, Menlo, Monaco, 'Courier New', monospace",
+  "editor.fontLigatures": true,
+  "editor.fontSize": 15,
+  // Files
+  "files.exclude": {
+    "**/node_modules/": true,
+    "**/.git": true,
+    "**/.next": true,
+    "**/.DS_Store": true,
+    "**/package-lock.json": true,
+    "**/yarn.lock": true,
+    "vendor": true,
+    "**/npm-debug.log": true,
+    "**/dist": true,
+    "**/*.bs.js": true
+  },
+  "files.associations": {
+    "*.toml": "toml",
+    "*.njk": "html"
+  },
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "files.eol": "\n",
+  // Workbench
+  "workbench.editor.enablePreviewFromQuickOpen": true,
+  "workbench.colorTheme": "GitHub Dark",
+  "workbench.iconTheme": "vscode-icons",
+  "workbench.preferredLightColorTheme": "Solarized Dark",
+  "workbench.preferredDarkColorTheme": "GitHub Dark",
+  "workbench.list.horizontalScrolling": true,
+  "workbench.panel.defaultLocation": "right",
+  "workbench.fontAliasing": "antialiased",
+  "workbench.startupEditor": "none",
+  "workbench.settings.editor": "json",
+  "workbench.editor.showIcons": false,
+  "workbench.settings.enableNaturalLanguageSearch": false, // formatting only supports LF line endings
+  "workbench.sideBar.location": "left",
+  "workbench.editorAssociations": {
+    "*.ipynb": "jupyter-notebook"
+  },
+  // Color changes
+  "workbench.colorCustomizations": {
+    "[GitHub Dark]": {
+      "editorLineNumber.foreground": "#23292f",
+      "editor.lineHighlightBackground": "#23292f"
     },
-    "editor.minimap.enabled": false,
-    "files.autoSave": "onFocusChange",
-    "files.eol": "\n",
-    "files.trimTrailingWhitespace": true,
-    "files.trimFinalNewlines": true,
-    "go.formatTool": "goimports",
-    "go.lintTool": "golangci-lint",
-    "go.lintFlags": [
-        "--fast"
-    ],
-    "telemetry.enableTelemetry": false,
-    "terraform.telemetry.enabled": false,
-    "telemetry.enableCrashReporter": false,
-    "window.openFoldersInNewWindow": "on",
-    "window.title": "${dirty}${rootName}",
-    "window.newWindowDimensions": "maximized",
-    "workbench.colorTheme": "One Dark Pro",
-    "workbench.iconTheme": "vscode-icons",
-    "terminal.external.linuxExec": "tilix",
-    "go.useLanguageServer": true,
-    "window.zoomLevel": 0
+    // "[poimandres]": {
+    //   "editorLineNumber.foreground": "#1a1e29"
+    // },
+    "[GitHub Light]": {
+      "editorLineNumber.foreground": "#ffffff",
+      "editor.lineHighlightBackground": "#ffffff"
+    }
+  },
+  // Window
+  "window.autoDetectColorScheme": true,
+  "window.restoreWindows": "all",
+  "window.newWindowDimensions": "maximized",
+  // Breadcrumbs
+  "breadcrumbs.filePath": "on",
+  "breadcrumbs.enabled": true,
+  // Debug
+  "debug.openDebug": "neverOpen",
+  "debug.showInStatusBar": "never",
+  "debug.toolBarLocation": "hidden",
+  "debug.console.fontSize": 15,
+  // Search
+  "search.quickOpen.includeHistory": false,
+  "search.searchEditor.defaultNumberOfContextLines": null,
+  "search.smartCase": true,
+  // "search.useIgnoreFiles": false,
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.git": true,
+    "dist": true,
+    "out": true,
+    "coverage": true
+  },
+  // Terminal
+  "terminal.integrated.copyOnSelection": true,
+  "terminal.integrated.fontSize": 15,
+  "terminal.integrated.inheritEnv": false,
+  // Explorer
+  "explorer.openEditors.visible": 0,
+  "explorer.confirmDelete": false,
+  "explorer.confirmDragAndDrop": false,
+  "explorer.decorations.badges": false,
+  // Go
+  "go.useLanguageServer": true,
+  "go.useCodeSnippetsOnFunctionSuggest": false,
+  "go.languageServerExperimentalFeatures": {
+    "diagnostics": true // for build and vet errors as you type
+  },
+  "[go]": {
+    "editor.snippetSuggestions": "none",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    }
+  },
+  "gopls": {
+    "usePlaceholders": true,
+    "completeUnimported": true
+  },
+  "go.liveErrors": {
+    "enabled": true,
+    "delay": 500
+  },
+  "go.lintTool": "golangci-lint-v2",
+  "go.lintOnSave": "package",
+  // TypeScript
+  "typescript.check.npmIsInstalled": false,
+  "typescript.updateImportsOnFileMove.enabled": "never",
+  // JavaScript
+  "javascript.updateImportsOnFileMove.enabled": "never",
+  "javascript.validate.enable": false,
+  // GitLens
+  // "gitlens.keymap": "chorded",
+  // "gitlens.codeLens.scopes": ["containers", "document"],
+  // "gitlens.views.fileHistory.enabled": true,
+  // "gitlens.views.lineHistory.enabled": true,
+  "gitlens.currentLine.format": "${message}",
+  // "gitlens.advanced.messages": {
+  //   "suppressCommitNotFoundWarning": true,
+  //   "suppressFileNotUnderSourceControlWarning": true,
+  //   "suppressShowKeyBindingsNotice": true,
+  //   "suppressUpdateNotice": true
+  // },
+  // Extensions
+  "extensions.ignoreRecommendations": true,
+  "[javascript]": {
+    "editor.autoClosingBrackets": "always",
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  // Highlight
+  "highlight-matching-tag.styles": {
+    "opening": {
+      "name": {
+        "underline": "#368ddc"
+      }
+    }
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.autoClosingBrackets": "always"
+  },
+  "jupyter.insidersChannel": "weekly",
+  "[dart]": {
+    "editor.formatOnSave": true,
+    "editor.formatOnType": true,
+    // "editor.rulers": [
+    //   80
+    // ],
+    "editor.selectionHighlight": false,
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "editor.suggestSelection": "first",
+    "editor.tabCompletion": "onlySnippets",
+    "editor.wordBasedSuggestions": "off"
+  },
+  "gitlens.hovers.currentLine.over": "line",
+  "dart.previewLsp": true,
+  "workbench.editor.decorations.colors": false,
+  "workbench.editor.decorations.badges": false,
+  "gitlens.codeLens.authors.enabled": false,
+  "gitlens.codeLens.enabled": false,
+  "[typescript]": {
+    "editor.autoClosingBrackets": "always",
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.autoClosingQuotes": "always",
+  "debug.javascript.autoAttachFilter": "onlyWithFlag",
+  "go.toolsManagement.autoUpdate": true,
+  "security.workspace.trust.untrustedFiles": "open",
+  "editor.inlineSuggest.enabled": true,
+  "github.copilot.enable": {
+    "*": false,
+    "go": true,
+    "yaml": false,
+    "plaintext": false,
+    "markdown": false
+  },
+  "[javascriptreact]": {
+    "editor.autoClosingBrackets": "always"
+  },
+  "editor.autoClosingBrackets": "always",
+  "emmet.includeLanguages": {
+    "javascript": "html"
+  },
+  "python.defaultInterpreterPath": "/usr/bin/python3",
+  "files.watcherExclude": {
+    "**/.bloop": true,
+    "**/.metals": true,
+    "**/.ammonite": true
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.accessibilitySupport": "off",
+  "window.zoomLevel": -1,
+  "telemetry.telemetryLevel": "off",
+  "redhat.telemetry.enabled": false,
+  "editor.guides.indentation": true,
+  "vsicons.dontShowNewVersionMessage": true,
+  "vs-kubernetes": {
+    "vs-kubernetes.minikube-show-information-expiration": "2023-08-20T13:49:34.417Z",
+    "vs-kubernetes.crd-code-completion": "enabled"
+  },
+  "githubPullRequests.pullBranch": "never",
+  "workbench.activityBar.location": "hidden",
+  "github.copilot.nextEditSuggestions.enabled": true
 }

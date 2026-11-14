@@ -38,8 +38,8 @@ Packages: `packages/pacman.txt` (repo) and `packages/aur.txt` (AUR), from `pacma
 `bin/terraform` dispatches each directory to its `required_version` via `tfswitch -b`, using a
 per-directory link instead of a shared `~/bin/terraform` symlink.
 
-Not tracked here: `.ssh/config` beyond the old copy (it names private hosts) and VS Code
-settings (`vscode/`, stale).
+VS Code settings and the extension list (`code --list-extensions`) are in `vscode/`.
+Not tracked: `~/.ssh/config` (it names private hosts; only an old generic copy is here).
 
 # Pi coding agent
 

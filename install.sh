@@ -34,5 +34,6 @@ link git/ignore            "$HOME/.config/git/ignore"
 link git/allowed_signers   "$HOME/.config/git/allowed_signers"
 link bin/git-sync          "$HOME/bin/git-sync"
 link bin/terraform         "$HOME/bin/terraform"
+link vscode/settings.json  "$HOME/.config/Code/User/settings.json"
 
 "$repo/pi/install.sh"

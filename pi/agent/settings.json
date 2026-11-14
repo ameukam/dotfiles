@@ -15,7 +15,7 @@
     "npm:@sting8k/pi-vcc@0.11.2",
     "npm:pi-context-view@0.8.4",
     "npm:@spences10/pi-themes@0.0.11",
-    "npm:pi-web-access"
+    "npm:pi-web-access@0.47.0"
   ],
   "defaultTools": [
     "+codemode"

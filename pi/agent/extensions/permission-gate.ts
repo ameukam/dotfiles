@@ -1,10 +1,12 @@
 /**
  * Permission Gate (adapted from Pi's examples/extensions/permission-gate.ts)
  *
- * Asks before risky bash commands: terraform/tofu state changes, destructive
- * kubectl, helm releases, git history rewrites, and system-level commands.
- * Also asks before edit/write on protected paths (.env*, .git/, node_modules/)
- * and before overwriting an existing file outside a git repository.
+ * Asks before risky bash commands: terraform/tofu state changes, kubectl and
+ * helm cluster changes, gcloud/gsutil resource changes, git history rewrites,
+ * system-level commands, and bash writes into credential/config directories.
+ * Also asks before edit/write on protected paths (.env*, .git/, node_modules/,
+ * ~/.ssh, ~/.kube, ~/.gnupg, gh/gcloud config, Pi's own config) and before
+ * overwriting an existing file outside a git repository.
  * Commands issued through codemode pass through the same tool_call hook.
  * Without a UI (pi -p, RPC, subagent children) matched commands are blocked.
  *
@@ -47,6 +49,29 @@ const rules: Rule[] = [
 			if (after(s, "kubectl", "delete|drain") !== null) return true;
 			const rest = after(s, "kubectl", "replace");
 			return rest !== null && /(?:^|\s)--force\b/.test(rest);
+		},
+	},
+	{
+		label: "kubectl cluster change",
+		test: (s) =>
+			!DRY_RUN.test(s) &&
+			(after(s, "kubectl", String.raw`apply|create|patch|replace|scale|autoscale|set|edit|label|annotate|taint|cordon|uncordon`) !== null ||
+				after(s, "kubectl", String.raw`rollout\s+(?:restart|undo|pause|resume)`) !== null),
+	},
+	{
+		label: "gcloud resource change",
+		test: (s) => {
+			const m = new RegExp(String.raw`${START}gcloud\s+(.*)$`).exec(s);
+			if (m) {
+				// Command words come before the first flag; local CLI state (config/auth/components) is not a resource change.
+				const words = m[1].split(/\s+/).filter(Boolean);
+				const firstFlag = words.findIndex((w) => w.startsWith("-"));
+				const cmd = firstFlag === -1 ? words : words.slice(0, firstFlag);
+				if (["config", "auth", "components", "info", "help"].includes(cmd[0] ?? "")) return false;
+				const verbs = /^(?:create|delete|update|patch|set|unset|add-[\w-]+|remove-[\w-]+|set-[\w-]+|deploy|resize|reset|start|stop|suspend|resume|import|enable|disable|rm|mv|cp|apply|undelete|restore|rollback|upgrade)$/;
+				return cmd.slice(1).some((w) => verbs.test(w));
+			}
+			return after(s, "gsutil", "rm|rb|mv|rsync") !== null;
 		},
 	},
 	{
@@ -129,6 +154,15 @@ const rules: Rule[] = [
 	{ label: "chmod/chown 777", test: (s) => new RegExp(String.raw`${START}(?:chmod|chown)\s(?:.*\s)?0?777${END}`).test(s) },
 	{ label: "dd write", test: (s) => new RegExp(String.raw`${START}dd\s(?:.*\s)?of=`).test(s) },
 	{ label: "mkfs", test: (s) => new RegExp(String.raw`${START}mkfs(?:\.\w+)?${END}`).test(s) },
+	{
+		label: "bash write to credential/config dir",
+		// Only writes: a redirect, tee, or a mutating command whose arguments name a sensitive path. Reads pass.
+		test: (s) => {
+			if (!SENSITIVE_IN_TEXT.test(s)) return false;
+			if (new RegExp(String.raw`>{1,2}\s*["']?${SENSITIVE_SRC}`).test(s)) return true;
+			return new RegExp(String.raw`${START}(?:tee|cp|mv|rm|ln|install|chmod|chown|truncate|rsync|sed\s+(?:\S+\s+)*-i\S*)${END}`).test(s);
+		},
+	},
 ];
 
 function matchRules(command: string): string[] {
@@ -142,6 +176,14 @@ function matchRules(command: string): string[] {
 
 // .env, .env.local, .env.production … but not .env.example/.sample/.template
 const PROTECTED_PATH = /(?:^|\/)(?:\.env(?:\.(?!example$|sample$|template$|dist$)[^/]+)?$|\.git\/|node_modules\/)/;
+
+// Credential and config locations: SSH, kube, GnuPG, gh/gcloud CLI config, and Pi's own
+// config (not sessions/caches) both under ~/.pi/agent and in the dotfiles repo.
+const SENSITIVE_SRC = String.raw`(?:~|\$HOME|\$\{HOME\}|/home/[^/\s]+)/(?:\.ssh|\.kube|\.gnupg|\.config/gh|\.config/gcloud|\.pi/agent/(?:auth\.json|settings\.json|models\.json|mcp\.json|extensions|agents|prompts)|dotfiles/pi)(?:/|\b)`;
+const SENSITIVE_IN_TEXT = new RegExp(SENSITIVE_SRC);
+const SENSITIVE_ABS = new RegExp(
+	String.raw`^${homedir().replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}/(?:\.ssh|\.kube|\.gnupg|\.config/gh|\.config/gcloud|\.pi/agent/(?:auth\.json|settings\.json|models\.json|mcp\.json|extensions|agents|prompts)|dotfiles/pi)(?:/|$)`,
+);
 
 function resolvePath(raw: string, cwd: string): string {
 	let p = raw.startsWith("@") ? raw.slice(1) : raw;
@@ -159,6 +201,7 @@ function inGitRepo(path: string): boolean {
 function matchFileTool(tool: "edit" | "write", rawPath: string, cwd: string): string[] {
 	const abs = resolvePath(rawPath, cwd);
 	if (PROTECTED_PATH.test(abs)) return [`${tool} protected path`];
+	if (SENSITIVE_ABS.test(abs)) return [`${tool} credential/config path`];
 	if (tool === "write" && existsSync(abs) && !inGitRepo(abs)) return ["overwrite file outside git"];
 	return [];
 }
