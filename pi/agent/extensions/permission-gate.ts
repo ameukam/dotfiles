@@ -25,6 +25,9 @@ type Rule = { label: string; test: (segment: string) => boolean };
 const START = String.raw`(?:^|[\s(\x60'"{/])`;
 const END = String.raw`(?=[\s'"\x60)]|$)`;
 const DRY_RUN = /--dry-run(?!=none)/;
+// gcloud global flags that take a separate value token (`--project my-proj`).
+const GCLOUD_VALUE_FLAGS =
+	/^--(?:project|account|configuration|impersonate-service-account|billing-project|access-token-file|format|verbosity|flags-file|flatten|trace-token)$/;
 
 /** Text after `<bin> [global flags] <sub>` within one segment, or null when absent. */
 function after(segment: string, bin: string, sub: string): string | null {
@@ -63,10 +66,20 @@ const rules: Rule[] = [
 		test: (s) => {
 			const m = new RegExp(String.raw`${START}gcloud\s+(.*)$`).exec(s);
 			if (m) {
-				// Command words come before the first flag; local CLI state (config/auth/components) is not a resource change.
+				// Command words are the non-flag tokens, wherever global flags appear (`gcloud --project p compute ...`).
+				// A flag written as `--flag value` also consumes the next token. Local CLI state (config/auth/components)
+				// is not a resource change.
 				const words = m[1].split(/\s+/).filter(Boolean);
-				const firstFlag = words.findIndex((w) => w.startsWith("-"));
-				const cmd = firstFlag === -1 ? words : words.slice(0, firstFlag);
+				const cmd: string[] = [];
+				for (let i = 0; i < words.length; i++) {
+					const w = words[i];
+					if (w === "--") break;
+					if (w.startsWith("-")) {
+						if (!w.includes("=") && GCLOUD_VALUE_FLAGS.test(w)) i++;
+						continue;
+					}
+					cmd.push(w);
+				}
 				if (["config", "auth", "components", "info", "help"].includes(cmd[0] ?? "")) return false;
 				const verbs = /^(?:create|delete|update|patch|set|unset|add-[\w-]+|remove-[\w-]+|set-[\w-]+|deploy|resize|reset|start|stop|suspend|resume|import|enable|disable|rm|mv|cp|apply|undelete|restore|rollback|upgrade)$/;
 				return cmd.slice(1).some((w) => verbs.test(w));
