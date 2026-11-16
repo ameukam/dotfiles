@@ -21,6 +21,7 @@
     "+codemode"
   ],
   "subagents": {
+    "defaultInheritGlobalContext": true,
     "agentOverridesByProvider": {
       "github-copilot": {
         "scout": {
