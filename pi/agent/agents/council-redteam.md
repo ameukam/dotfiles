@@ -2,7 +2,7 @@
 name: council-redteam
 description: Adversarial attacker: finds how a proposal breaks, gets abused, or fails
 tools: read, grep, find, ls
-model: github-copilot/gpt-6.1-sol
+model: github-copilot/gpt-6.2-sol
 thinking: high
 systemPromptMode: replace
 inheritProjectContext: true

@@ -4,7 +4,7 @@
   "defaultModel": "claude-opus-5.5",
   "enabledModels": [
     "github-copilot/claude-opus-5.5:high",
-    "github-copilot/gpt-6.1-sol:high",
+    "github-copilot/gpt-6.2-sol:high",
     "github-copilot/claude-haiku-5.5:low",
     "github-copilot/claude-fable-5.2:xhigh",
     "google-vertex/gemini-4-hydrogen:high",
@@ -25,7 +25,7 @@
     "agentOverridesByProvider": {
       "github-copilot": {
         "scout": {
-          "model": "github-copilot/gpt-6.1-sol",
+          "model": "github-copilot/gpt-6.2-sol",
           "thinking": "medium"
         }
       }
@@ -35,7 +35,7 @@
     ],
     "agentOverrides": {
       "reviewer": {
-        "model": "github-copilot/gpt-6.1-sol",
+        "model": "github-copilot/gpt-6.2-sol",
         "thinking": "high"
       },
       "oracle": {
@@ -46,7 +46,7 @@
     "watchdog": {
       "enabled": true,
       "main": {
-        "model": "github-copilot/gpt-6.1-sol",
+        "model": "github-copilot/gpt-6.2-sol",
         "thinking": "high"
       }
     }

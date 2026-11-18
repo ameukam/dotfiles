@@ -1,7 +1,119 @@
 {
   "$schema": "https://pi.dev/schemas/models.schema.json",
   "providers": {
-    "github-copilot": { "baseUrl": "https://api.enterprise.githubcopilot.com" },
+    "github-copilot": {
+      "baseUrl": "https://api.enterprise.githubcopilot.com",
+      "models": [
+        {
+          "id": "gpt-6.2-sol",
+          "name": "GPT-6.2 Sol",
+          "api": "openai-responses",
+          "reasoning": true,
+          "input": ["text", "image"],
+          "cost": {
+            "input": 2,
+            "output": 10,
+            "cacheRead": 0.1,
+            "cacheWrite": 2.5,
+            "tiers": [
+              {
+                "inputTokensAbove": 272000,
+                "input": 4,
+                "output": 15,
+                "cacheRead": 0.2,
+                "cacheWrite": 5
+              }
+            ]
+          },
+          "contextWindow": 1050000,
+          "maxTokens": 128000,
+          "headers": {
+            "User-Agent": "GitHubCopilotChat/0.35.0",
+            "Editor-Version": "vscode/1.107.0",
+            "Editor-Plugin-Version": "copilot-chat/0.35.0",
+            "Copilot-Integration-Id": "vscode-chat"
+          },
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": "low",
+            "medium": "medium",
+            "high": "high",
+            "xhigh": "xhigh",
+            "max": "max"
+          },
+          "compat": {
+            "supportsMidConvoSystemMessages": true,
+            "supportsAdditionalTools": true,
+            "supportsOpenAIGrammarTools": true
+          },
+          "inputLimits": {
+            "images": {
+              "resize": {
+                "maxWidth": 2000,
+                "maxHeight": 2000,
+                "maxBytes": 4718592,
+                "jpegQuality": 80
+              }
+            }
+          }
+        },
+        {
+          "id": "gpt-6.2-astra",
+          "name": "GPT-6.2 Astra",
+          "api": "openai-responses",
+          "reasoning": true,
+          "input": ["text", "image"],
+          "cost": {
+            "input": 8,
+            "output": 40,
+            "cacheRead": 0.4,
+            "cacheWrite": 10,
+            "tiers": [
+              {
+                "inputTokensAbove": 272000,
+                "input": 16,
+                "output": 60,
+                "cacheRead": 0.8,
+                "cacheWrite": 20
+              }
+            ]
+          },
+          "contextWindow": 1000000,
+          "maxTokens": 128000,
+          "headers": {
+            "User-Agent": "GitHubCopilotChat/0.35.0",
+            "Editor-Version": "vscode/1.107.0",
+            "Editor-Plugin-Version": "copilot-chat/0.35.0",
+            "Copilot-Integration-Id": "vscode-chat"
+          },
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": "low",
+            "medium": "medium",
+            "high": "high",
+            "xhigh": "xhigh",
+            "max": "max"
+          },
+          "compat": {
+            "supportsMidConvoSystemMessages": true,
+            "supportsAdditionalTools": true,
+            "supportsOpenAIGrammarTools": true
+          },
+          "inputLimits": {
+            "images": {
+              "resize": {
+                "maxWidth": 2000,
+                "maxHeight": 2000,
+                "maxBytes": 4718592,
+                "jpegQuality": 80
+              }
+            }
+          }
+        }
+      ]
+    },
     "google-vertex": {
       "models": [
         {
