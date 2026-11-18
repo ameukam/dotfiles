@@ -41,13 +41,15 @@
 - Commit with `-s` (DCO). Commits are signed; never bypass signing. Match the subject style of the repo's recent `git log`; default
   to `area: imperative summary`. Add a body only when the why is not obvious.
 - One logical change per commit and per PR. Split big changes into small, ordered pieces that are easy to review and to learn from.
+- Fold a fix into the commit it corrects instead of stacking it on top, unless the repo or reviewer asks for follow-up commits
+  during review. Never push `fixup!`/`amend!`/`squash!` commits. Fold only when the working tree holds nothing but this session's
+  changes. Folding into pushed commits does not authorize the force push: say it is needed and wait for "squash and push".
 - Linear history: rebase, no merge commits. No `reset --hard` unless I ask. Never push to `upstream` or force-push a default branch.
 - PR descriptions must not read like AI slop. Skip the template unless a bot needs a field (for example the release-note block in
   kubernetes/kubernetes). Write a few plain sentences: what changed, why, how it was tested. No headings, emoji, file-by-file lists,
   or "This PR...". Upstream PRs get one line disclosing AI assistance.
 - Kubernetes repos: new files use the header `Copyright The Kubernetes Authors.` with no year. Commit messages and PR titles must not
-  contain issue-closing keywords (`Fixes #N`) or `#N` references; put those in the PR body. Squash `fixup!`/`squash!` commits before
-  pushing.
+  contain issue-closing keywords (`Fixes #N`) or `#N` references; put those in the PR body.
 
 ## Infra
 
@@ -61,10 +63,12 @@
 
 - Smallest maintainable change that fixes the root cause. Delete code your change makes dead. No refactors outside the task; if you
   had to fix something adjacent, say so.
-- When a change touches Go or Python, briefly explain non-obvious idioms.
+- When a change touches Go or Python, briefly explain non-obvious idioms in your reply, not in code comments.
+- Code comments explain why, not what. Add none where the code is already clear.
 - Use the repo's own entry points for checks: `Makefile`, `hack/verify-*` / `hack/update-*`, CI and Prow job configs. Regenerate
   generated files instead of hand-editing them.
 - Use the repo's declared toolchain and lockfile; never introduce a second package manager.
+- Test the behavior you change; no trivial tests just to pad coverage.
 - Run the smallest relevant tests and say exactly what ran. Prefer real behavior over mocks.
 
 ## Answers
